@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="panda">
-  <xacro:arg name="robot_name" default="panda"/>
-  
   <xacro:include filename="$(find franka_description)/robots/panda_arm.xacro"/>
   <xacro:include filename="$(find franka_description)/robots/hand.xacro"/>
+
+  <!-- for simulation -->
   <xacro:include filename="$(find franka_description)/robots/panda.gazebo.xacro"/>
-  <xacro:include filename="$(find franka_description)/robots/panda.transmission.xacro"/>
+  <xacro:include filename="panda.transmission.xacro"/>
+  <!-- end for simulation -->
 
   <xacro:panda_arm />
   <xacro:hand ns="panda" rpy="0 0 ${-pi/4}" connected_to="panda_link8"/>
 
+  <!-- for simulation -->
+  <xacro:arg name="robot_name" default="panda"/>
   <xacro:panda_gazebo robot_name="$(arg robot_name)" />
-  <xacro:panda_transmission robot_name="$(arg robot_name)" />
+  <xacro:panda_transmission robot_name="$(arg robot_name)" load_hand="true" />
+  <!-- end for simulation -->
+
+<!--Camera link and plugin-->
+   <xacro:include filename="$(find realsense_gazebo_plugin)/urdf/realsense-RS200.macro.xacro"/>
+   <xacro:realsense-rs200 prefix="" parent="panda_link8">
+        <origin xyz="0.05 0 0.05" rpy="${-pi/4} ${-pi/2} 0" />
+   </xacro:realsense-rs200>
 </robot>
